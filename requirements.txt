@@ -1,0 +1,6 @@
+boto3
+dotenv
+streamlit
+pandas
+yfinance
+matplotlib

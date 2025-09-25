@@ -1,0 +1,5 @@
+books.json
+__pycache__/*
+.env
+*.ipynb
+*.xlsx
