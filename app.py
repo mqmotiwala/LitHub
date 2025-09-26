@@ -1,17 +1,23 @@
 import helpers as h
 import streamlit as st
 
+from datetime import datetime as dt
+
+st.title("LitHub -- Mufi's Reading Log 🤓")
+
 h.initialize_app()
+h.render_metrics()
 
-st.title("Mufaddal's LitHub")
+tabs = st.tabs(["LitHub", "Reading List"])
+with tabs[0]:
+    with st.expander(":material/book_5: Add a new book", expanded=False):
+        h.render_edit_mode()
 
-st.write(len(st.session_state.books))
+    for id in st.session_state.books:
+        if id in st.session_state.edit_mode:
+            h.render_edit_mode(id)
+        else:
+            h.render_view_mode(id)
 
-with st.expander(":material/book_5: Add a new book", expanded=False):
-    h.render_edit_mode()
-        
-for book in st.session_state.books:
-    if book["id"] in st.session_state.edit_mode:
-        h.render_edit_mode(book)
-    else:
-        h.render_view_mode(book)
+with tabs[1]:
+    h.render_reading_list()

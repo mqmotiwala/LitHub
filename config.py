@@ -14,6 +14,7 @@ def env(key, default=None):
 # aws vars
 S3_BUCKET = "lithub-676206945006"
 BOOKS_JSON_PATH = "books.json"
+READING_LIST_JSON_PATH = "reading_list.json"
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_REGION = env("AWS_REGION")

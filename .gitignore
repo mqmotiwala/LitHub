@@ -1,4 +1,5 @@
 books.json
+reading_list.json
 __pycache__/*
 .env
 *.ipynb
