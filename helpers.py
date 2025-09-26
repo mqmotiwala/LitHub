@@ -96,9 +96,12 @@ def get_humanized_timespan(start, end):
     return humanize.precisedelta(end - start)
 
 def format_reflections(notes):
-    parts = notes.split("\n")
+    quoted_notes = "\n".join(
+        f"> {line}" if line.strip() != "" else ">"
+        for line in notes.splitlines()
+    )
 
-    return "> " + parts[0] + "\n > ".join(parts[1:])
+    return quoted_notes
 
 def render_metrics():
     metrics = {
