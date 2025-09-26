@@ -47,7 +47,7 @@ def get_read_count(year=None):
     
     cnt = 0
     for id in st.session_state.books:
-        if year in st.session_state.books[id]["end"]:
+        if st.session_state.books[id]["end"] is not None and year in st.session_state.books[id]["end"]:
             cnt += 1
 
     return cnt
