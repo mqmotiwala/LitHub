@@ -17,7 +17,7 @@ def load_books():
 def save_to_s3(obj, path):
     def serializer(obj):
         if isinstance(obj, date):
-            return obj.strftime('%Y-%m-%d')
+            return obj.strftime(c.DATE_FORMAT)
         
         raise TypeError(f"Type {type(obj)} not serializable")
 
@@ -60,7 +60,7 @@ def sort_books(books):
 
     return sorted(
         books, 
-        key = lambda k: dt.strptime(books[k]["end"], "%Y-%m-%d") if books[k]["end"] is not None else dt.now(), 
+        key = lambda k: dt.strptime(books[k]["end"], c.DATE_FORMAT) if books[k]["end"] is not None else dt.now(), 
         reverse = True
     )
 
@@ -231,7 +231,7 @@ def render_reading_list():
 
     reading_list = sorted(
         reading_list, 
-        key = lambda book: dt.strptime(book["added_on"], "%Y-%m-%d"), 
+        key = lambda book: dt.strptime(book["added_on"], c.DATE_FORMAT), 
         reverse = True
     )
 
@@ -255,7 +255,7 @@ def render_reading_list():
                         "title": title,
                         "author": author,
                         "notes": notes,
-                        "added_on": dt.now().strftime("%Y-%m-%d"),
+                        "added_on": dt.now().strftime(c.DATE_FORMAT),
                     })
 
                     save_to_s3(reading_list, c.READING_LIST_JSON_PATH)
