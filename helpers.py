@@ -229,6 +229,12 @@ def render_reading_list():
     reading_list_str = response['Body'].read().decode('utf-8')
     reading_list = json.loads(reading_list_str)
 
+    reading_list = sorted(
+        reading_list, 
+        key = lambda book: dt.strptime(book["added_on"], "%Y-%m-%d"), 
+        reverse = True
+    )
+
     with st.expander(":material/book_5: Add to reading list", expanded=False):
         with st.form("add-reading-list-form", clear_on_submit=True):
             cols = st.columns(2)
