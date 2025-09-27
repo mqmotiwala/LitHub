@@ -31,6 +31,7 @@ FILLED_STAR = "★"
 EMPTY_STAR = "☆"
 
 DATE_FORMAT = "%Y-%m-%d"
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 APP_NAME = "LitHub"
 TEXT_INPUT_PLACEHOLDER = "Provide input"

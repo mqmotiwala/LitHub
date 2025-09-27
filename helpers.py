@@ -231,7 +231,7 @@ def render_reading_list():
 
     reading_list = sorted(
         reading_list, 
-        key = lambda book: dt.strptime(book["added_on"], c.DATE_FORMAT), 
+        key = lambda book: dt.strptime(book["added_on"], c.DATETIME_FORMAT), 
         reverse = True
     )
 
@@ -259,7 +259,7 @@ def render_reading_list():
                         "author": author,
                         "notes": notes,
                         "genre": genre, 
-                        "added_on": dt.now().strftime(c.DATE_FORMAT),
+                        "added_on": dt.now().strftime(c.DATETIME_FORMAT),
                     })
 
                     save_to_s3(reading_list, c.READING_LIST_JSON_PATH)
@@ -280,7 +280,9 @@ def render_reading_list():
 
                 with st.container(horizontal=True, horizontal_alignment="left", gap=None):
                     st.badge(f"_{', '.join(book["genre"])}_", icon=":material/menu_book:", color="green")
-                    st.badge(f"Added on {book['added_on']}", icon=":material/today:")
+
+                    start = dt.strptime(book["added_on"], c.DATETIME_FORMAT) 
+                    st.badge(f"Added {humanize.naturaldate(start)}", icon=":material/today:")
 
                 if book.get("notes"):
                     st.markdown(format_reflections(book["notes"]))
