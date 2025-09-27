@@ -117,10 +117,9 @@ def render_metrics():
     for year in range(2020, dt.now().year + 1)[::-1]:
         metrics[f"Read in {year}"] = get_read_count(year)
 
-    cols = st.columns(len(metrics))
-    for i, (metric, value) in enumerate(metrics.items()):
-        with cols[i]:
-            st.metric(metric, value)
+    with st.container(border=False, horizontal=True, gap="small"):
+        for metric, value in metrics.items():
+                st.metric(metric, value)
 
 def render_view_mode(id):
 
