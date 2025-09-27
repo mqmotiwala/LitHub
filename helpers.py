@@ -236,8 +236,8 @@ def render_reading_list():
     )
 
     with st.expander(":material/book_5: Add to reading list", expanded=False):
-        with st.form("add-reading-list-form", clear_on_submit=True):
-            cols = st.columns(2)
+        with st.form("add-reading-list-form", clear_on_submit=True, border=False):
+            cols = st.columns(3)
 
             with cols[0]:
                 title = st.text_input("Title", placeholder="Book title", max_chars=50)
@@ -245,10 +245,13 @@ def render_reading_list():
             with cols[1]:
                 author = st.text_input("Author", placeholder="Book author", max_chars=50)
 
+            with cols[2]:
+                genre = st.multiselect("Genre", sorted(st.session_state.GENRES), max_selections=3, accept_new_options=True)
+
             notes = st.text_area("Notes", placeholder=c.TEXT_INPUT_PLACEHOLDER)
 
             if st.form_submit_button("Add"):
-                if not all(s and s.strip() for s in [title, author]):
+                if not all(s and s.strip() for s in [title, author, genre]):
                     st.error("You are missing necessary fields.", icon="🚨")
                 else:
                     reading_list.append({
@@ -279,7 +282,7 @@ def render_reading_list():
                 if book.get("notes"):
                     st.markdown(format_reflections(book["notes"]))
 
-                if st.button(":material/delete: Remove", key=f"remove-{i}"):
+                if st.button(":material/delete:", key=f"remove-{i}"):
                     del reading_list[i]
                     save_to_s3(reading_list, c.READING_LIST_JSON_PATH)
                     st.rerun()
