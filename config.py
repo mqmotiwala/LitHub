@@ -34,3 +34,4 @@ DATE_FORMAT = "%Y-%m-%d"
 
 APP_NAME = "LitHub"
 TEXT_INPUT_PLACEHOLDER = "Provide input"
+SEARCH_BAR_PLACEHOLDER = "Filter books"

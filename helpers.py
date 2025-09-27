@@ -138,9 +138,10 @@ def render_view_mode(id):
                 end = dt.strptime(book["end"], c.DATE_FORMAT)
                 st.badge(f"_{humanize.naturaldate(start)} -> {humanize.naturaldate(end)} ({get_humanized_timespan(book["start"], book["end"])})_", icon=":material/timeline:")
             else:
-                st.badge(f"_Reading since {humanize.naturaldate(start)} ({get_humanized_timespan(book["start"], dt.now().date())})_", icon=":material/timer_play:")
+                st.badge(f"_Reading since {humanize.naturaldate(start)} ({get_humanized_timespan(book["start"], dt.now().date())})_", icon=":material/timer_play:", color="orange")
 
-            st.badge(get_rating_as_stars(book["rating"]), color="yellow")
+            if book.get("end") is not None:
+                st.badge(get_rating_as_stars(book["rating"]), color="yellow")
 
         st.markdown(format_reflections(book["notes"]))
 
@@ -265,19 +266,20 @@ def render_reading_list():
         return
 
     # Show reading list
-    st.subheader("Mufi's Reading List")
+    search_txt = st.text_input("filter reading list", label_visibility="collapsed", icon=":material/search:", placeholder=c.SEARCH_BAR_PLACEHOLDER)
     for i, book in enumerate(reading_list):
-        with st.container(border=True):
-            with st.container(gap=None):
-                st.header(book["title"])
-                st.markdown(f"_{book["author"]}_")
+        if search_txt is None or any(search_txt in str(value).lower() for value in book.values()):
+            with st.container(border=True):
+                with st.container(gap=None):
+                    st.header(book["title"])
+                    st.markdown(f"_{book["author"]}_")
 
-            st.badge(f"Added on {book['added_on']}", icon=":material/today:")
+                st.badge(f"Added on {book['added_on']}", icon=":material/today:")
 
-            if book.get("notes"):
-                st.markdown(format_reflections(book["notes"]))
+                if book.get("notes"):
+                    st.markdown(format_reflections(book["notes"]))
 
-            if st.button(":material/delete: Remove", key=f"remove-{i}"):
-                del reading_list[i]
-                save_to_s3(reading_list, c.READING_LIST_JSON_PATH)
-                st.rerun()
+                if st.button(":material/delete: Remove", key=f"remove-{i}"):
+                    del reading_list[i]
+                    save_to_s3(reading_list, c.READING_LIST_JSON_PATH)
+                    st.rerun()
