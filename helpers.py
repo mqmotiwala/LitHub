@@ -251,13 +251,14 @@ def render_reading_list():
             notes = st.text_area("Notes", placeholder=c.TEXT_INPUT_PLACEHOLDER)
 
             if st.form_submit_button("Add"):
-                if not all(s and s.strip() for s in [title, author, genre]):
+                if not all(s and s.strip() for s in [title, author] + genre):
                     st.error("You are missing necessary fields.", icon="🚨")
                 else:
                     reading_list.append({
                         "title": title,
                         "author": author,
                         "notes": notes,
+                        "genre": genre, 
                         "added_on": dt.now().strftime(c.DATE_FORMAT),
                     })
 
@@ -277,7 +278,9 @@ def render_reading_list():
                     st.header(book["title"])
                     st.markdown(f"_{book["author"]}_")
 
-                st.badge(f"Added on {book['added_on']}", icon=":material/today:")
+                with st.container(horizontal=True, horizontal_alignment="left", gap=None):
+                    st.badge(f"_{', '.join(book["genre"])}_", icon=":material/menu_book:", color="green")
+                    st.badge(f"Added on {book['added_on']}", icon=":material/today:")
 
                 if book.get("notes"):
                     st.markdown(format_reflections(book["notes"]))
