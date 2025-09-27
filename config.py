@@ -34,27 +34,3 @@ DATE_FORMAT = "%Y-%m-%d"
 
 APP_NAME = "LitHub"
 TEXT_INPUT_PLACEHOLDER = "Provide input"
-
-GENRES = [
-    'Philosophy',
-    'Religion',
-    'Fiction',
-    'Science Fiction',
-    'Bildungsroman',
-    'Advice',
-    'Self-Help',
-    'Treatise',
-    'Horror',
-    'Non-Fiction',
-    'Speech',
-    'Anthology',
-    'Fitness',
-    'Poetry',
-    'Biography',
-    'Adventure Fiction',
-    'History',
-    'Existential',
-    'Play',
-    'Philosophical Fiction',
-    'Romance'
- ]

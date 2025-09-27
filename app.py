@@ -1,8 +1,6 @@
 import helpers as h
 import streamlit as st
 
-from datetime import datetime as dt
-
 st.title("LitHub -- Mufi's Reading Log 🤓")
 
 h.initialize_app()

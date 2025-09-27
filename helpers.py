@@ -77,6 +77,12 @@ def initialize_app():
     if "books" not in st.session_state:
         load_books()
 
+    st.session_state.GENRES = {
+        g
+        for book in st.session_state.books.values()
+        for g in book["genre"]
+    }
+
 def get_rating_as_stars(rating):
     if rating is None:
         rating = 0
@@ -178,7 +184,7 @@ def render_edit_mode(id=None):
         with cols[1]:
             author = st.text_input("Author", value=book.get("author"), max_chars=50, placeholder=c.TEXT_INPUT_PLACEHOLDER)
             end = st.date_input("End Date", value=book.get("end"), format="YYYY-MM-DD")
-            genre = st.multiselect("Genre", sorted(c.GENRES), max_selections=3, accept_new_options=True, default=book.get("genre"))
+            genre = st.multiselect("Genre", sorted(st.session_state.GENRES), max_selections=3, accept_new_options=True, default=book.get("genre"))
 
         notes = st.text_area("Reflections", value=book.get("notes"), height="content", placeholder=c.TEXT_INPUT_PLACEHOLDER)
         notes = "" if notes is None else notes
