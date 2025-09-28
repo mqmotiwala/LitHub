@@ -110,12 +110,27 @@ def format_reflections(notes):
     return quoted_notes
 
 def render_metrics():
+    # reading metrics 
     metrics = {
         "Total": get_read_count(),
     }
 
     for year in range(2020, dt.now().year + 1)[::-1]:
         metrics[f"Read in {year}"] = get_read_count(year)
+
+    with st.container(border=False, horizontal=True, gap="small",):
+        for metric, value in metrics.items():
+                st.metric(metric, value)
+
+    # ratings metrics
+    ratings = [book["rating"] for book in st.session_state.books.values()]
+    metrics = {
+        "Average Rating": f"{sum(ratings)/len(ratings):.2f}",
+    }
+
+    for i in range(c.MAX_RATING, c.MIN_RATING - 1, -1):
+        star_str = lambda n: n*c.FILLED_STAR + (c.MAX_RATING-n)*c.EMPTY_STAR
+        metrics[star_str(i)] = sum([1 for rating in ratings if i == rating])
 
     with st.container(border=False, horizontal=True, gap="small"):
         for metric, value in metrics.items():
@@ -199,6 +214,7 @@ def render_edit_mode(id=None):
                 "author": author,
                 "genre": genre,
                 "rating": rating,
+                "rating_string": rating*c.FILLED_STAR + (c.MAX_RATING - rating)*c.EMPTY_STAR,
                 "start": start,
                 "end": end,
                 "notes": notes, 
