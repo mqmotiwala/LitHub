@@ -1,5 +1,5 @@
+import re
 import json
-import time
 import uuid
 import humanize
 import config as c
@@ -12,7 +12,13 @@ def load_books():
     books_str = response['Body'].read().decode('utf-8')
     books = json.loads(books_str)
     sorted_ids = sort_books(books)
+
     st.session_state.books = {id: books[id] for id in sorted_ids}
+    
+    # generate book counts for handling duplicate titles in anchors
+    st.session_state.book_counts = {}
+    for id in st.session_state.books:
+        st.session_state.book_counts[st.session_state.books[id]["title"]] = st.session_state.book_counts.get(st.session_state.books[id]["title"], 0) + 1
 
 def save_to_s3(obj, path):
     def serializer(obj):
@@ -145,7 +151,15 @@ def render_view_mode(id):
 
     with st.container(border=True):
         with st.container(gap=None):
-            st.header(book["title"])
+            # specify anchors so we can link to specific books
+            # without anchors, the same book title would create duplicate anchors
+            # to keep URLs short, we append part of the uuid for a unique anchor only when needed
+            slugify = lambda s: re.sub(r'[^a-zA-Z0-9\-]', '', s.replace(' ', '-')).lower()
+
+            anchor = slugify(book["title"])
+            anchor += f"-{id[:4]}" if st.session_state.book_counts[book["title"]] > 1 else ""
+
+            st.header(book["title"], anchor=anchor)
             st.markdown(f"_{book["author"]}_")
 
         with st.container(horizontal=True, horizontal_alignment="left", gap=None):
