@@ -43,7 +43,7 @@ def get_read_count(year=None):
     """
     
     if year is None:
-        return len(st.session_state.books)
+        return len([book for book in st.session_state.books.values() if book.get("end") is not None])
     
     if not isinstance(year, str):
         try:
@@ -117,33 +117,49 @@ def format_reflections(notes):
 
 def render_metrics():
     with st.expander("Analytics", icon=":material/analytics:"):
-        # reading metrics 
-        metrics = {
-            "Total": get_read_count(),
-        }
+        with st.container(border=False, gap=None):
+            # reading metrics 
+            total = get_read_count()
+            metrics = {
+                "Total Read": total,
+            }
 
-        for year in range(2020, dt.now().year + 1)[::-1]:
-            metrics[f"Read in {year}"] = get_read_count(year)
+            for year in range(2020, dt.now().year + 1)[::-1]:
+                metrics[f"{year}"] = get_read_count(year)
 
-        with st.container(border=False, horizontal=True, gap="small", horizontal_alignment="left"):
-            for metric, value in metrics.items():
-                    st.metric(metric, value)
+            with st.container(border=False, horizontal=True, gap="small", horizontal_alignment="center", vertical_alignment="top"):
+                for metric, value in metrics.items():
+                        st.metric(metric, value)
 
-        st.divider()
+            st.divider()
 
-        # ratings metrics
-        ratings = [book["rating"] for book in st.session_state.books.values()]
-        metrics = {
-            "Average Rating": f"{sum(ratings)/len(ratings):.2f}",
-        }
+            # ratings metrics
+            ratings = [book["rating"] for book in st.session_state.books.values() if book.get("end") is not None]
+            metrics = {
+                "Average Rating": f"{sum(ratings)/len(ratings):.2f}",
+            }
 
-        for i in range(c.MAX_RATING, c.MIN_RATING - 1, -1):
-            star_str = lambda n: n*c.FILLED_STAR + (c.MAX_RATING-n)*c.EMPTY_STAR
-            metrics[star_str(i)] = sum([1 for rating in ratings if i == rating])
+            for i in range(c.MAX_RATING, c.MIN_RATING - 1, -1):
+                star_str = lambda n: n*c.FILLED_STAR + (c.MAX_RATING-n)*c.EMPTY_STAR
+                metrics[star_str(i)] = sum([1 for rating in ratings if i == rating])
 
-        with st.container(border=False, horizontal=True, gap="small", horizontal_alignment="right"):
-            for metric, value in metrics.items():
-                    st.metric(metric, value)
+            with st.container(border=False, horizontal=True, gap="small", horizontal_alignment="center", vertical_alignment="top"):
+                for metric, value in metrics.items():
+                        st.metric(metric, value)
+
+            st.divider()
+
+            # genre metrics
+            genre_counts = {}
+            for book in st.session_state.books.values():
+                if book.get("end") is not None:
+                    for g in book["genre"]:
+                        genre_counts[g] = genre_counts.get(g, 0) + 1
+
+            sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
+            with st.container(border=False, horizontal=True, gap="small", horizontal_alignment="center", vertical_alignment="top"):
+                for genre, count in sorted_genres[:7]:
+                    st.metric(genre, count, delta=f"{count/total*100:.0f}%", delta_color="off")
 
 def render_view_mode(id):
 
