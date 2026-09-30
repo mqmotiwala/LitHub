@@ -1,24 +1,39 @@
 import config as c
 import helpers as h
+import utils.auth as a
 import streamlit as st
 
-st.header("LitHub: Mufi's Reading Log 🤓")
+from sections.faqs import show_faqs
+from sections.books import show_books
+from sections.header import show_header
+from sections.landing import show_landing
+from sections.features import show_features
+from sections.analytics import show_analytics
+from sections.reading_list import show_reading_list
+
+st.set_page_config(
+    page_title=c.APP_NAME,
+    page_icon=c.APP_ICON,
+    layout="centered"
+)
+if not st.user.is_logged_in:
+    show_landing()
+    a.login_button(unique_key="login_top")
+    show_features()
+    show_faqs()
+    a.login_button(unique_key="login_bottom")
+    st.stop()
+
+a.ensure_user_loaded()
+
+show_header()
 
 h.initialize_app()
-h.render_metrics()
+show_analytics()
 
 tabs = st.tabs(["LitHub", "Reading List"])
 with tabs[0]:
-    with st.expander(":material/book_5: Add a new book", expanded=False):
-        h.render_edit_mode()
-
-    search_txt = st.text_input("filter books", label_visibility="collapsed", icon=":material/search:", placeholder=c.SEARCH_BAR_PLACEHOLDER)
-    for id in st.session_state.books:
-        if id in st.session_state.edit_mode:
-            h.render_edit_mode(id)
-        else:
-            if search_txt is None or any(search_txt in str(value).lower() for value in st.session_state.books[id].values()):
-                h.render_view_mode(id)
+    show_books()
 
 with tabs[1]:
-    h.render_reading_list()
+    show_reading_list()

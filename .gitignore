@@ -1,6 +1,8 @@
 books.json
 reading_list.json
 __pycache__/*
+*/__pycache__/*
 .env
+secrets.toml
 *.ipynb
 *.xlsx

@@ -1,4 +1,8 @@
 boto3
 dotenv
-streamlit
+requests
+streamlit==1.58.0
+Authlib==1.6.5
+httpx==0.28.1
+watchtower==3.4.0
 humanize
