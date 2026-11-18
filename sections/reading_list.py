@@ -55,7 +55,7 @@ def show_reading_list():
     # Show reading list
     search_txt = st.text_input("filter reading list", label_visibility="collapsed", icon=":material/search:", placeholder=c.SEARCH_BAR_PLACEHOLDER)
     for i, book in enumerate(reading_list):
-        if search_txt is None or any(search_txt in str(value).lower() for value in book.values()):
+        if search_txt is None or any(search_txt.lower() in str(value).lower() for value in book.values()):
             with st.container(border=True):
                 with st.container(gap=None):
                     st.header(book["title"])

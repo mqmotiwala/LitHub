@@ -147,5 +147,5 @@ def show_books():
         if id in st.session_state.edit_mode:
             render_edit_mode(id)
         else:
-            if search_txt is None or any(search_txt in str(value).lower() for value in st.session_state.books[id].values()):
+            if search_txt is None or any(search_txt.lower() in str(value).lower() for value in st.session_state.books[id].values()):
                 render_view_mode(id)
